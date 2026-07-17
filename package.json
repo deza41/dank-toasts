@@ -13,23 +13,30 @@
   "license": "MIT",
   "main": "dist/dank-toasts.cjs.js",
   "module": "dist/dank-toasts.mjs",
+  "types": "dist/index.d.ts",
   "style": "dist/style.css",
   "sideEffects": false,
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/dank-toasts.mjs",
       "require": "./dist/dank-toasts.cjs.js"
     },
-    "./style.css": "./dist/style.css",
+    "./style.css": {
+      "types": "./dist/style.css.d.ts",
+      "default": "./dist/style.css"
+    },
     "./package.json": "./package.json"
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "npm run build:js && npm run build:css",
+    "build": "npm run build:js && npm run build:css && npm run build:types",
     "build:js": "rollup -c",
     "build:css": "tailwindcss -i ./src/style.css -o ./dist/style.css --minify",
+    "build:types": "mkdir -p dist && cp src/index.d.ts src/style.css.d.ts dist/",
+    "typecheck": "npm run build:types && tsc --noEmit -p tsconfig.json",
     "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
@@ -44,12 +51,14 @@
     "@rollup/plugin-babel": "^7.1.0",
     "@rollup/plugin-commonjs": "^29.0.3",
     "@rollup/plugin-node-resolve": "^16.0.3",
+    "@types/react": "^19.2.17",
     "motion": "^12.42.2",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "rollup": "^4.62.2",
     "rollup-plugin-peer-deps-external": "^2.2.4",
-    "tailwindcss": "^3.4.19"
+    "tailwindcss": "^3.4.19",
+    "typescript": "^7.0.2"
   },
   "repository": {
     "type": "git",

@@ -1,20 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { getRandomSuccessToast, getRandomFailureToast } from "./toastPools";
+import { subscribeToasts } from "./toastBus";
 import useToastEffects from "./hooks/useToastEffects";
 import useToastTextStyles from "./hooks/useToastTextStyles";
 import isDarkMode from "./utils/isDarkMode";
 
 const AUTO_DISMISS_MS = 3200;
 
-// Less-invasive alternative to SuccessOverlay/FailureOverlay: a little
-// emoji + text bubble that pops up bottom-right and dismisses itself.
-// Fire one by bumping `successPing`/`failurePing` to a new { id } object
-// (see toggleSuccessToast/toggleFailureToast in App.jsx).
-export default function CornerToast({ successPing, failurePing }) {
+// Mount once near the root of your app. Fire toasts from anywhere with
+// toastSuccess()/toastFail() (see toastBus.js) - no props required.
+export default function ToastContainer() {
   const [toasts, setToasts] = useState([]);
-  const lastSuccessId = useRef(null);
-  const lastFailureId = useRef(null);
   const { buildEffectParticles, renderEffectParticles } = useToastEffects();
   const { renderToastText } = useToastTextStyles();
 
@@ -30,36 +27,20 @@ export default function CornerToast({ successPing, failurePing }) {
   }
 
   useEffect(() => {
-    if (successPing?.id && successPing.id !== lastSuccessId.current) {
-      lastSuccessId.current = successPing.id;
-      const picked = getRandomSuccessToast();
+    const unsubscribe = subscribeToasts((event) => {
+      const picked =
+        event.variant === "success" ? getRandomSuccessToast() : getRandomFailureToast();
       pushToast({
-        variant: "success",
-        emoji: successPing.emoji || picked.emoji,
-        text: successPing.message || picked.text,
-        image: successPing.image || picked.image,
-        effect: successPing.effect || picked.effect,
-        textTheme: successPing.textTheme || picked.textTheme,
+        variant: event.variant,
+        emoji: event.emoji || picked.emoji,
+        text: event.message || picked.text,
+        image: event.image || picked.image,
+        effect: event.effect || picked.effect,
+        textTheme: event.textTheme || picked.textTheme,
       });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [successPing]);
-
-  useEffect(() => {
-    if (failurePing?.id && failurePing.id !== lastFailureId.current) {
-      lastFailureId.current = failurePing.id;
-      const picked = getRandomFailureToast();
-      pushToast({
-        variant: "failure",
-        emoji: failurePing.emoji || picked.emoji,
-        text: failurePing.message || picked.text,
-        image: failurePing.image || picked.image,
-        effect: failurePing.effect || picked.effect,
-        textTheme: failurePing.textTheme || picked.textTheme,
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [failurePing]);
+    });
+    return unsubscribe;
+  }, []);
 
   return (
     <div className="fixed bottom-4 right-4 z-[100000] flex flex-col items-end gap-3 pointer-events-none">

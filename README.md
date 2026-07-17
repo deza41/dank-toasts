@@ -5,7 +5,8 @@ bubble pops up bottom-right, plays a particle effect, and dismisses itself —
 a less-invasive alternative to a full-screen success/failure overlay.
 
 Animated with [Motion](https://motion.dev) (`motion/react`) and styled with
-Tailwind CSS utility classes.
+Tailwind CSS utility classes. Written in plain JS/JSX and works as-is in
+JavaScript projects; TypeScript projects get full types out of the box.
 
 ## Install
 
@@ -18,8 +19,8 @@ alongside the package.
 
 ## Setup
 
-1. Mount `<CornerToast />` once, near the root of your app, and hold its two
-   trigger props (`successPing` / `failurePing`) in state.
+1. Mount `<ToastContainer />` once, near the root of your app. It takes no
+   required props.
 2. Import the stylesheet once, anywhere in your app's entry point:
 
    ```js
@@ -41,50 +42,43 @@ alongside the package.
 
 ## Usage
 
+Works like `react-toastify`: mount the container once, then fire toasts
+imperatively from anywhere — event handlers, thunks, utils, wherever —
+with `toastSuccess()` / `toastFail()`. No state, no props, no plumbing.
+
 ```jsx
-import { useState } from "react";
-import { CornerToast } from "dank-toasts";
+import { ToastContainer, toastSuccess, toastFail } from "dank-toasts";
 import "dank-toasts/style.css";
 
 export default function App() {
-  const [successPing, setSuccessPing] = useState(null);
-  const [failurePing, setFailurePing] = useState(null);
-
-  function onSave() {
-    setSuccessPing({ id: Date.now() });
-  }
-
-  function onError() {
-    setFailurePing({ id: Date.now() });
-  }
-
   return (
-    <>
-      <button onClick={onSave}>Save</button>
-      <button onClick={onError}>Break something</button>
+    <div>
+      <button onClick={() => toastSuccess()}>Notify success!</button>
+      <button onClick={() => toastFail()}>Notify failure!</button>
 
-      <CornerToast successPing={successPing} failurePing={failurePing} />
-    </>
+      <ToastContainer />
+    </div>
   );
 }
 ```
 
-Bump `successPing`/`failurePing` to a **new object** (any object with a
-unique `id`) each time you want to fire a toast — `CornerToast` watches for
-`id` changes, not the prop reference itself.
-
-By default it picks a random emoji/message pair from the built-in pools. You
-can override any part of it per-fire:
+Called with no arguments, each fires a random emoji/message pair from the
+built-in pools. Pass a message and/or override any part of it:
 
 ```js
-setSuccessPing({
-  id: Date.now(),
-  emoji: "🚀",       // override the emoji
-  message: "Shipped it.", // override the text
-  effect: "fireBurst",    // override the particle effect
-  textTheme: "gold",      // override the text theme
+toastSuccess("Shipped it.");
+toastFail("That broke.");
+
+toastSuccess("Shipped it.", {
+  emoji: "🚀",          // override the emoji
+  effect: "fireBurst",  // override the particle effect
+  textTheme: "gold",    // override the text theme
 });
 ```
+
+Toasts fired before `<ToastContainer />` mounts are queued and flushed as
+soon as it mounts, so it's safe to call `toastSuccess()`/`toastFail()` at
+any point in your app's lifecycle.
 
 ## Adding your own toasts
 
@@ -125,6 +119,26 @@ You can also read `getRandomSuccessToast()` / `getRandomFailureToast()` or
 the raw `successToasts` / `failureToasts` arrays directly if you want to
 build your own picking logic.
 
+## TypeScript
+
+Type declarations ship with the package — no `@types/dank-toasts` needed.
+Everything above works the same in `.tsx`, with autocomplete and checking
+for `effect`/`textTheme` names:
+
+```tsx
+import { ToastContainer, toastSuccess, toastFail, type ToastOptions } from "dank-toasts";
+import "dank-toasts/style.css";
+
+const options: ToastOptions = { effect: "fireBurst", textTheme: "gold" };
+toastSuccess("Shipped it.", options);
+```
+
+`effect` is typed as the union of built-in effect names (`ToastEffectName`).
+`textTheme` accepts the union of built-in theme names (`ToastTextTheme`) or
+any other string, since a plain Tailwind class is also valid there. JS
+consumers are unaffected — the library's runtime code is plain JS/JSX and
+doesn't require a TypeScript build step.
+
 ## Dark mode
 
 The bubble checks `localStorage.theme === "dark"` to decide its
@@ -146,6 +160,11 @@ npm run build   # builds dist/ (JS bundles via Rollup + CSS via Tailwind)
 - `npm run build:css` — compiles `src/style.css` with the Tailwind CLI,
   scanning `src/**/*.{js,jsx}` for the utility classes actually used, into
   `dist/style.css`.
+- `npm run build:types` — copies the hand-written `src/index.d.ts` and
+  `src/style.css.d.ts` into `dist/`.
+- `npm run typecheck` — type-checks `test-types/smoke.tsx` against the
+  built declarations (via `dist`), as a regression check that the shipped
+  types still match the public API.
 
 ## License
 

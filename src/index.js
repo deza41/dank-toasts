@@ -1,4 +1,5 @@
-export { default as CornerToast } from "./CornerToast";
+export { default as ToastContainer } from "./ToastContainer";
+export { toastSuccess, toastFail } from "./toastBus";
 export {
   addSuccessToast,
   addFailureToast,

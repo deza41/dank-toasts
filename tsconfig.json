@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "dank-toasts": ["./dist/index.d.ts"],
+      "dank-toasts/style.css": ["./dist/style.css.d.ts"]
+    }
+  },
+  "include": ["src/index.d.ts", "test-types"]
+}
