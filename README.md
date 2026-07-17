@@ -1,23 +1,41 @@
-# dank-toasts
+# 🍞✨ dank-toasts
 
-Brainrot-flavored corner toast notifications for React. A little emoji + text
-bubble pops up bottom-right, plays a particle effect, and dismisses itself —
-a less-invasive alternative to a full-screen success/failure overlay.
+[![npm version](https://img.shields.io/npm/v/dank-toasts.svg?color=e879f9&label=npm)](https://www.npmjs.com/package/dank-toasts)
+[![npm downloads](https://img.shields.io/npm/dm/dank-toasts.svg?color=38bdf8)](https://www.npmjs.com/package/dank-toasts)
+[![bundle size](https://img.shields.io/bundlephobia/minzip/dank-toasts?color=34d399&label=gzip)](https://bundlephobia.com/package/dank-toasts)
+[![types](https://img.shields.io/npm/types/dank-toasts.svg?color=fbbf24)](./src/index.d.ts)
+[![license](https://img.shields.io/npm/l/dank-toasts.svg?color=f472b6)](./LICENSE)
 
-Animated with [Motion](https://motion.dev) (`motion/react`) and styled with
-Tailwind CSS utility classes. Written in plain JS/JSX and works as-is in
-JavaScript projects; TypeScript projects get full types out of the box.
+**Brainrot-flavored corner toast notifications for React.** 💅🔥💀
 
-## Install
+A little emoji + text bubble pops up bottom-right, plays a particle effect,
+and dismisses itself — a less-invasive alternative to a full-screen
+success/failure overlay.
 
-```bash
-npm install dank-toasts motion react react-dom
+```
+                                          ╭──────────────────────────────╮
+                                    ✨ ⭐  │  🎉   Serving excellence.    │
+                                          ╰──────────────────────────────╯
+                                                     ╭───────────────────────╮
+                                               💀 💀 │  💀  Big oof.         │
+                                                     ╰───────────────────────╯
 ```
 
-`motion`, `react`, and `react-dom` are peer dependencies — install them
-alongside the package.
+Animated with [Motion](https://motion.dev) 🎞️ (`motion/react`) and styled
+with Tailwind CSS utility classes 🎨. Written in plain JS/JSX and works
+as-is in JavaScript projects; TypeScript projects get full types 🔷 out of
+the box.
 
-## Setup
+## 📦 Install
+
+```bash
+npm install dank-toasts motion
+```
+
+> `motion`, `react`, and `react-dom` are peer dependencies — install them
+> alongside the package.
+
+## ⚙️ Setup
 
 1. Mount `<ToastContainer />` once, near the root of your app. It takes no
    required props.
@@ -40,11 +58,11 @@ alongside the package.
    ],
    ```
 
-## Usage
+## 🚀 Usage
 
 Works like `react-toastify`: mount the container once, then fire toasts
 imperatively from anywhere — event handlers, thunks, utils, wherever —
-with `toastSuccess()` / `toastFail()`. No state, no props, no plumbing.
+with `toastSuccess()` / `toastFail()`. No state, no props, no plumbing. 🙌
 
 ```jsx
 import { ToastContainer, toastSuccess, toastFail } from "dank-toasts";
@@ -53,8 +71,8 @@ import "dank-toasts/style.css";
 export default function App() {
   return (
     <div>
-      <button onClick={() => toastSuccess()}>Notify success!</button>
-      <button onClick={() => toastFail()}>Notify failure!</button>
+      <button onClick={() => toastSuccess()}>Notify success! 🎉</button>
+      <button onClick={() => toastFail()}>Notify failure! 💀</button>
 
       <ToastContainer />
     </div>
@@ -78,9 +96,9 @@ toastSuccess("Shipped it.", {
 
 Toasts fired before `<ToastContainer />` mounts are queued and flushed as
 soon as it mounts, so it's safe to call `toastSuccess()`/`toastFail()` at
-any point in your app's lifecycle.
+any point in your app's lifecycle. 📬
 
-## Adding your own toasts
+## ➕ Adding your own toasts
 
 The success/failure pools are plain arrays you can extend at runtime, from
 anywhere in your app (e.g. once at startup):
@@ -102,24 +120,26 @@ addSuccessToast("🎯", "Bullseye.", {
 append to the shared pool (duplicates of the same emoji+text pair are
 ignored). `options` is optional and accepts:
 
-| Option      | Type   | Description                                                          |
-| ----------- | ------ | --------------------------------------------------------------------- |
-| `image`     | string | An image URL shown (small, animated) instead of the plain emoji.      |
-| `effect`    | string | Name of a built-in particle effect layered on top, see below.         |
-| `textTheme` | string | A built-in animated text theme name, or any Tailwind text-color class. |
+| Option      | Type   | Description                                                             |
+| ----------- | ------ | ------------------------------------------------------------------------ |
+| `image`     | string | 🖼️ An image URL shown (small, animated) instead of the plain emoji.     |
+| `effect`    | string | 🎆 Name of a built-in particle effect layered on top, see below.        |
+| `textTheme` | string | 🌈 A built-in animated text theme name, or any Tailwind text-color class. |
 
-Built-in `effect` names: `kissyScatter`, `sparkleBurst`, `fireBurst`,
-`skullRain`, `tearRain`, `heartBurst`, `moneyRain`, `iceShatter`,
-`explosionBurst`, `ghostFloat`, `poopRain`.
+**Built-in `effect` names:** `kissyScatter` 💋, `sparkleBurst` ✨,
+`fireBurst` 🔥, `skullRain` 💀, `tearRain` 😭, `heartBurst` ❤️,
+`moneyRain` 💸, `iceShatter` ❄️, `explosionBurst` 💥, `ghostFloat` 👻,
+`poopRain` 💩.
 
-Built-in `textTheme` names: `rainbow`, `fire`, `ice`, `neonPulse`, `glitch`,
-`shake`, `gold`, `toxic`, `danger`, `pastel`.
+**Built-in `textTheme` names:** `rainbow` 🌈, `fire` 🔥, `ice` 🧊,
+`neonPulse` 💠, `glitch` 📺, `shake` 〰️, `gold` 🥇, `toxic` ☣️, `danger` 🚨,
+`pastel` 🍬.
 
 You can also read `getRandomSuccessToast()` / `getRandomFailureToast()` or
 the raw `successToasts` / `failureToasts` arrays directly if you want to
 build your own picking logic.
 
-## TypeScript
+## 🔷 TypeScript
 
 Type declarations ship with the package — no `@types/dank-toasts` needed.
 Everything above works the same in `.tsx`, with autocomplete and checking
@@ -139,7 +159,7 @@ any other string, since a plain Tailwind class is also valid there. JS
 consumers are unaffected — the library's runtime code is plain JS/JSX and
 doesn't require a TypeScript build step.
 
-## Dark mode
+## 🌙 Dark mode
 
 The bubble checks `localStorage.theme === "dark"` to decide its
 background/border colors. Set `localStorage.theme = "dark"` in your app
@@ -147,7 +167,7 @@ when dark mode is active (or ignore this if you always render in light
 mode — it falls back to light styling everywhere else, including during
 server-side rendering).
 
-## Development
+## 🛠️ Development
 
 ```bash
 npm install
@@ -166,6 +186,6 @@ npm run build   # builds dist/ (JS bundles via Rollup + CSS via Tailwind)
   built declarations (via `dist`), as a regression check that the shipped
   types still match the public API.
 
-## License
+## 📄 License
 
-MIT
+MIT — see [LICENSE](./LICENSE). 💛
