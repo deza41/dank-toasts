@@ -1,0 +1,62 @@
+{
+  "name": "dank-toasts",
+  "version": "0.1.0",
+  "description": "Brainrot-flavored corner toast notifications for React, animated with Motion.",
+  "keywords": [
+    "react",
+    "toast",
+    "notifications",
+    "animation",
+    "motion",
+    "framer-motion"
+  ],
+  "license": "MIT",
+  "main": "dist/dank-toasts.cjs.js",
+  "module": "dist/dank-toasts.mjs",
+  "style": "dist/style.css",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "import": "./dist/dank-toasts.mjs",
+      "require": "./dist/dank-toasts.cjs.js"
+    },
+    "./style.css": "./dist/style.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "npm run build:js && npm run build:css",
+    "build:js": "rollup -c",
+    "build:css": "tailwindcss -i ./src/style.css -o ./dist/style.css --minify",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "motion": "^12.0.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.7",
+    "@babel/preset-env": "^7.29.7",
+    "@babel/preset-react": "^7.29.7",
+    "@rollup/plugin-babel": "^7.1.0",
+    "@rollup/plugin-commonjs": "^29.0.3",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "motion": "^12.42.2",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "rollup": "^4.62.2",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "tailwindcss": "^3.4.19"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deza41/dank-toasts.git"
+  },
+  "author": "Tyrone",
+  "engines": {
+    "node": ">=18"
+  }
+}
