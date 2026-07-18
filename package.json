@@ -35,9 +35,11 @@
     "build": "npm run build:js && npm run build:css && npm run build:types",
     "build:js": "rollup -c",
     "build:css": "tailwindcss -i ./src/style.css -o ./dist/style.css --minify",
-    "build:types": "mkdir -p dist && cp src/index.d.ts src/style.css.d.ts dist/",
+    "build:types": "node -e \"const fs=require('fs');fs.mkdirSync('dist',{recursive:true});fs.copyFileSync('src/index.d.ts','dist/index.d.ts');fs.copyFileSync('src/style.css.d.ts','dist/style.css.d.ts');\"",
     "typecheck": "npm run build:types && tsc --noEmit -p tsconfig.json",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "peerDependencies": {
     "motion": "^12.0.0",
@@ -51,12 +53,16 @@
     "@rollup/plugin-babel": "^7.1.0",
     "@rollup/plugin-commonjs": "^29.0.3",
     "@rollup/plugin-node-resolve": "^16.0.3",
+    "@storybook/addon-a11y": "^10.5.2",
+    "@storybook/addon-docs": "^10.5.2",
+    "@storybook/react-vite": "^10.5.2",
     "@types/react": "^19.2.17",
     "motion": "^12.42.2",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "rollup": "^4.62.2",
     "rollup-plugin-peer-deps-external": "^2.2.4",
+    "storybook": "^10.5.2",
     "tailwindcss": "^3.4.19",
     "typescript": "^7.0.2"
   },

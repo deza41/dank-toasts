@@ -37,8 +37,8 @@ npm install dank-toasts motion
 
 ## ⚙️ Setup
 
-1. Mount `<ToastContainer />` once, near the root of your app. It takes no
-   required props.
+1. Mount `<ToastContainer />` once, near the root of your app. All props are
+   optional - see [Positioning & styling](#-positioning--styling) below.
 2. Import the stylesheet once, anywhere in your app's entry point:
 
    ```js
@@ -98,6 +98,43 @@ Toasts fired before `<ToastContainer />` mounts are queued and flushed as
 soon as it mounts, so it's safe to call `toastSuccess()`/`toastFail()` at
 any point in your app's lifecycle. 📬
 
+## 📍 Positioning & styling
+
+`<ToastContainer />` accepts optional props to control where the stack sits
+and how it's styled:
+
+```jsx
+<ToastContainer
+  position="top-center"
+  className="mt-2"                 // extra classes on the outer stack wrapper
+  style={{ zIndex: 999999 }}       // inline style on the outer stack wrapper
+  toastClassName="ring-2 ring-emerald-400"  // extra classes on each toast bubble
+  toastStyle={{ borderRadius: 12 }}         // inline style on each toast bubble
+/>
+```
+
+| Prop             | Type                                            | Description                                                                 |
+| ----------------- | ------------------------------------------------ | ----------------------------------------------------------------------------- |
+| `position`        | `ToastPosition`                                   | 📌 Where the stack is anchored. Default `"bottom-right"`.                    |
+| `className`       | `string`                                          | 🎨 Extra classes merged onto the outer stack wrapper.                        |
+| `style`            | `CSSProperties`                                   | 🎨 Inline style merged onto the outer stack wrapper.                         |
+| `toastClassName`  | `string \| (toast) => string`                     | 🎨 Extra classes merged onto each toast bubble - a string, or a function of the toast (access `toast.variant`, `toast.text`, etc). |
+| `toastStyle`       | `CSSProperties \| (toast) => CSSProperties`       | 🎨 Inline style merged onto each toast bubble - same string-or-function shape as `toastClassName`. |
+
+`position` is one of the 9 screen anchors (`{row}-{col}`), covering every
+corner, edge-center, and dead center of the screen:
+
+```
+top-left       top-center       top-right
+middle-left    middle-center    middle-right
+bottom-left    bottom-center    bottom-right
+```
+
+`middle-center` sits at the exact center of the screen and stays centered
+as toasts are added/removed. Stacks anchored to the top grow downward with
+the newest toast nearest the top edge; stacks anchored to the bottom (the
+default) grow upward with the newest toast nearest the bottom edge.
+
 ## ➕ Adding your own toasts
 
 The success/failure pools are plain arrays you can extend at runtime, from
@@ -114,11 +151,19 @@ addSuccessToast("🎯", "Bullseye.", {
   effect: "sparkleBurst",
   textTheme: "rainbow",
 });
+
+// or register a whole batch at once, as an array of { emoji, text, ...options }:
+addSuccessToast([
+  { emoji: "🐢", text: "Slow and steady, but a W." },
+  { emoji: "🎯", text: "Bullseye.", effect: "sparkleBurst", textTheme: "rainbow" },
+]);
 ```
 
 `addSuccessToast(emoji, text, options?)` / `addFailureToast(emoji, text, options?)`
-append to the shared pool (duplicates of the same emoji+text pair are
-ignored). `options` is optional and accepts:
+append a single entry to the shared pool; pass an array of
+`{ emoji, text, ...options }` objects instead to register several at once.
+Either way, duplicates of the same emoji+text pair are silently
+ignored. `options` is optional and accepts:
 
 | Option      | Type   | Description                                                             |
 | ----------- | ------ | ------------------------------------------------------------------------ |
@@ -185,6 +230,18 @@ npm run build   # builds dist/ (JS bundles via Rollup + CSS via Tailwind)
 - `npm run typecheck` — type-checks `test-types/smoke.tsx` against the
   built declarations (via `dist`), as a regression check that the shipped
   types still match the public API.
+
+### Storybook
+
+```bash
+npm run storybook   # dev server at http://localhost:6006
+```
+
+`src/ToastContainer.stories.jsx` has stories for trying out every position,
+custom `className`/`toastClassName` overrides, and the full effect/text-theme
+catalog — since toasts fire imperatively rather than rendering from props,
+each story has on-canvas buttons that call `toastSuccess()`/`toastFail()`
+directly. `npm run build-storybook` builds a static copy to `storybook-static/`.
 
 ## 📄 License
 

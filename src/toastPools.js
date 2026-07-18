@@ -1,6 +1,7 @@
 // Pools of emoji+message pairs used by the corner toasts (successToast/failureToast).
-// Each entry pairs a specific emoji with its specific message, so add new ones
-// via addSuccessToast(emoji, text, options)/addFailureToast(emoji, text, options) -
+// Each entry pairs a specific emoji with its specific message, so add new ones via
+// addSuccessToast(emoji, text, options)/addFailureToast(emoji, text, options), or
+// batch-register several via addSuccessToast([{ emoji, text, ...options }, ...]) -
 // the pools are shared, mutable arrays. `options` is optional and can carry:
 //   - image: an imported image shown (small, animated) instead of the plain emoji
 //   - effect: name of an extra particle animation to layer on, e.g. "kissyScatter"
@@ -100,13 +101,24 @@ function addPair(pool, emoji, text, options = {}) {
   pool.push({ emoji, text, ...options });
 }
 
-// options: { image, effect, textTheme } - all optional, see file header.
-export function addSuccessToast(emoji, text, options) {
-  addPair(successToasts, emoji, text, options);
+// Adds one entry (emoji, text, options) or a batch - an array of
+// { emoji, text, ...options } objects, same shape as the pool entries above.
+function addToPool(pool, emojiOrEntries, text, options) {
+  if (Array.isArray(emojiOrEntries)) {
+    emojiOrEntries.forEach(({ emoji, text, ...entryOptions }) => addPair(pool, emoji, text, entryOptions));
+    return;
+  }
+  addPair(pool, emojiOrEntries, text, options);
 }
 
-export function addFailureToast(emoji, text, options) {
-  addPair(failureToasts, emoji, text, options);
+// addSuccessToast(emoji, text, options?) or addSuccessToast([{ emoji, text, ...options }])
+// options: { image, effect, textTheme } - all optional, see file header.
+export function addSuccessToast(emojiOrEntries, text, options) {
+  addToPool(successToasts, emojiOrEntries, text, options);
+}
+
+export function addFailureToast(emojiOrEntries, text, options) {
+  addToPool(failureToasts, emojiOrEntries, text, options);
 }
 
 export function getRandomSuccessToast() {
